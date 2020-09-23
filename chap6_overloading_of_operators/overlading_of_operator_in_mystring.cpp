@@ -34,41 +34,60 @@ class MyString {
         int find(int find_from, const char* str) const;
         int find(int find_from, char c) const;
         int compare(const MyString& str) const;
+
+        bool operator==(const MyString& str);
+        MyString operator+(const MyString& str);
+        MyString& operator=(const MyString& str);
+        MyString& operator+=(const MyString& str);
+        char& operator[](const int index);
         
     
 };
 
+char& MyString::operator[](const int index){
+    return string_content[index];
+}
+
+MyString MyString::operator+(const MyString& str) {
+    MyString temp(*this);
+    temp.insert(string_length, str );
+    return temp;
+
+}
+
+MyString& MyString::operator=(const MyString& str) {
+   (*this).assign(str);
+   return (*this); 
+}
+
+MyString& MyString::operator+=(const MyString& str) {
+    (*this) = (*this) + str;
+    return (*this);
+}
+
+
 
 int main() {
-    MyString str1("very long string");
-    MyString str2("<some string inserted between>");
-    str1.reserve(30);
+    
+    MyString str1("a word");
+    MyString str2("sentence");
+    MyString str3("sentence");
 
-    std::cout << "Capacity : " << str1.capacity() << std::endl;
-    std::cout << "String length : " << str1.length() << std::endl;
-    str1.println();
+    if (str1 == str2)
+        std::cout << "str1 and str2 are same" << std::endl;
+    else
+        std::cout << "str1 and str2 are different" << std::endl;
 
-    str1.insert(5,str2);
-    str1.println();
-
-    std::cout << "Capacity : " << str1.capacity() << std::endl;
-    std::cout << "String length : " << str1.length() << std::endl;
-    str1.println();
-
-    MyString str3("abcd");
+    if (str2 == str3)
+        std::cout << "str2 and str3 are same" << std::endl;
+    else
+        std::cout << "str2 and str3 are different" << std::endl;
+    
+    str3 += str1 + " giho";
     str3.println();
-    str3.erase(1,2);
+    str3[0] = '!';
     str3.println();
 
-    MyString str4("this is a very very long string");
-    std::cout << "Location of first <very> in the string : " << str4.find(0,"very") << std::endl;
-    std::cout << "Location of second <very> in the string : " 
-    << str4.find(str4.find(0,"very")+1,"very") << std::endl;
- 
-    MyString str5("abcdef");
-    MyString str6("abcde");
-
-    std::cout << "str5 and str6 compare : " << str5.compare(str6) << std::endl;
 
     return 0;
 }
@@ -278,4 +297,8 @@ int MyString::compare(const MyString& str) const{
     else if(string_length > str.string_length) return 1;
 
     return -1;
+}
+
+bool MyString::operator==(const MyString& str) {
+    return !compare(str);
 }
