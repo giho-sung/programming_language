@@ -1,4 +1,4 @@
-# Practincing programming languages
+# Practicing programming languages
 > This is the space to learn programming languages. <br />
 Main languages are C++ and python. <br />
 <br />
