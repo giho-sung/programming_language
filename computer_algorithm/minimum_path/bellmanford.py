@@ -41,29 +41,35 @@ def bellmanford(n, W, F, start_vertex=0, end_vertex=None):
     for i in range(n):
         dist[i] = W[start_vertex][i]
     
-    # exception_vertices includes start_vertex 
+    # exception_no_incomming_vertices includes start_vertex 
     #                             and vertices which not have any incomming edges
     # put vertices which not have any incomming edges
-    exception_vertices = []
+    exception_no_incomming_vertices = []
+    exception_no_outcomming_vertices = []
     for i in range(n):
-        is_connected = False
+        is_incomming = False
+        is_outcomming = False
         for j in range(n):
             if W[j][i] != INF:
-                is_connected = True
-        if is_connected == False:
-            exception_vertices.append(i)
+                is_incomming = True
+            if W[i][j] != INF:
+                is_outcomming = True
+        if is_incomming == False:
+            exception_no_incomming_vertices.append(i)
+        if is_outcomming == False:
+            exception_no_outcomming_vertices.append(i)
     
-    # put start_vertex in exception_vertices
-    if start_vertex not in exception_vertices:
-        exception_vertices.append(start_vertex)
+    # put start_vertex in exception_no_incomming_vertices
+    if start_vertex not in exception_no_incomming_vertices:
+        exception_no_incomming_vertices.append(start_vertex)
 
     # this looks O(n^3) algorithm. 
-    # But, exception_vertices make n^2 to m. m is the number of edges 
+    # But, exception_no_incomming_vertices make n^2 to m. m is the number of edges 
     # Then, time complexity changes to O(nm)
     for _ in range(2, n):
         is_changed = False
-        for u in [x for x in range(n) if x not in exception_vertices]:
-            for i in range(n):
+        for u in [x for x in range(n) if x not in exception_no_incomming_vertices]:
+            for i in [x for x in range(n) if x not in exception_no_outcomming_vertices]:
                 if dist[u] > dist[i] + W[i][u]:
                     dist[u] = dist[i] + W[i][u]
                     touch[u] = i

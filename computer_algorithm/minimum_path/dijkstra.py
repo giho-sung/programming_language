@@ -49,7 +49,8 @@ def dijkstra(n, W, F, start_vertex=0, end_vertex=None):
         
         e = (touch[near], near)
         F.append(e)
-        cost_to_vertex[near] = length[near]
+        if length[near] >= 0:
+            cost_to_vertex[near] = length[near]
         # end condition
         if near == end_vertex:
             return cost_to_vertex[near]
