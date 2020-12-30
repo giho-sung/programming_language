@@ -26,6 +26,7 @@ def insertion_sort(array):
             else:
                 break
 
+from random import randint # to get random pivot in quick_sort
 
 def quick_sort(array):
     # in-place and stable quick sort
@@ -36,8 +37,15 @@ def _quick_sort(array, start_idx, end_idx):
     if start_idx >= end_idx:
         return
 
-    # let the end element is pivot
-    pivot = array[end_idx]
+    # let the random element is pivot
+    # and put the random element on the end
+    i_pivot = randint(start_idx, end_idx)
+    pivot = array[i_pivot]
+    # only swap pivot and last element if values are different to be stable sort
+    if pivot != array[end_idx]:
+        array[i_pivot], array[end_idx] = array[end_idx], array[i_pivot]
+    # now, array[end_idx] is the pivot from this line to below.
+
     lower_idx = start_idx
     for idx in range(start_idx, end_idx):
         if array[idx] < pivot:
