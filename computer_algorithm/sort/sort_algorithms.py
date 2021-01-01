@@ -29,7 +29,8 @@ def insertion_sort(array):
 from random import randint # to get random pivot in quick_sort
 
 def quick_sort(array):
-    # in-place and stable quick sort
+    # in-place quick sort
+    # quick is not stable method since swapping pivot and data would collapse stable property.
     _quick_sort(array, 0, len(array) - 1)
 
 
@@ -58,18 +59,95 @@ def _quick_sort(array, start_idx, end_idx):
     # right
     _quick_sort(array, lower_idx + 1, end_idx)
 
+def merge_sort(array):
+    # This merge sort is 2-way merge sort (dividing 2 block in each steps)
+    # It is stable, but not in-place. It needs extra memory as many as size of array 
+    _merge_sort(array, 0, len(array) - 1)
 
-def count_sort(array):
+def _merge_sort(array, start_idx, end_idx):
+    if start_idx >= end_idx:
+        return
+    mid_idx = (start_idx + end_idx) // 2
+    _merge_sort(array, start_idx, mid_idx)
+    _merge_sort(array, mid_idx + 1, end_idx)
+
+    # merging two sorted sequences
+    # merge(array, [start_idx, mid_idx], [mid_idx + 1, end_idx])
+    left_idx, right_idx = start_idx, mid_idx + 1
+    extra_array = []
+    while left_idx <= mid_idx and right_idx <= end_idx:
+        # comparison on values on left_idx and right_idx
+        if array[left_idx] <= array[right_idx]:
+            extra_array.append(array[left_idx])
+            left_idx += 1
+        else:
+            extra_array.append(array[right_idx])
+            right_idx += 1
+    # all left elements are added in extra_array. append remaining right elements to extra_array 
+    if left_idx > mid_idx:
+        extra_array.extend(array[right_idx:end_idx + 1])
+    # all right elements are added in extra_array. append remaning left elements to extra_array
+    else:
+        extra_array.extend(array[left_idx:mid_idx + 1])
+    
+    # exception
+    assert len(extra_array) == end_idx - start_idx + 1, 'In _merge_sort, size error in copied extra_array'
+
+    # overwrite array by extra_array
+    for i in range(end_idx - start_idx + 1):
+        array[start_idx + i] = extra_array[i]
+
+
+
+
+def count_sort(array, radix_digit=None):
+    # count_sort is stable but not in place
+    # k
     count = [0] * (max(array) + 1)
-
+    # n
     for val in array:
         count[val] += 1
+    # k
+    for idx in range(1, len(count)):
+        count[idx] += count[idx - 1]
+    # n
+    copied_array = [x for x in array]
+    for idx in reversed(range(len(array))):
+        count[copied_array[idx]] -= 1
+        array[count[copied_array[idx]]] = copied_array[idx]
 
-    array.clear()
-    for idx in range(len(count)):
-        if count[idx] != 0:
-            array.extend([idx] * count[idx])
+def count_sort_for_radix(array, radix_digit):
+    # radix_digit is n-th digit. For 532, 3-th digit is 5, 2-th digit is 3 and 1-th digit is 2. 
+    # count is limited to 0 - 9
+    # 10
+    count = [0] * 10
+    # n
+    for val in array:
+        val = (val // int(10**(radix_digit - 1))) % 10
+        count[val] += 1
+    # 10
+    for idx in range(1, len(count)):
+        count[idx] += count[idx - 1]
+    # n
+    copied_array = [x for x in array]
+    for idx in reversed(range(len(array))):
+        copied_val_for_radix = (copied_array[idx] // int(10**(radix_digit - 1))) % 10
+        count[copied_val_for_radix] -= 1
+        array[count[copied_val_for_radix]] = copied_array[idx]        
 
+def radix_sort(array):
+
+    # find maxmum digit
+    max_value = max(array)
+    max_digit = 0
+    while max_value > 0:
+        max_value //= 10
+        max_digit += 1
+
+    # count sort from lowest to largest digits
+    for digit in range(1, max_digit + 1):
+        count_sort_for_radix(array, digit)
+            
 
 def heap_sort(arr):
     n = len(arr)
