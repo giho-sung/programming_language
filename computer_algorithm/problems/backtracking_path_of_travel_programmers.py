@@ -5,7 +5,7 @@ Here, heuristic selection is 'def promising(ticket, a_visited, path)'
       Restoring previous states is conducted in 2 lines below # back to previous state
 
 This problem is in programmer.co.kr
-It called 여행경로(path of travel)
+It is called 여행경로(path of travel)
 '''
 
 def promising(ticket, a_visited, path):
